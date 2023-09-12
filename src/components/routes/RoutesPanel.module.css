@@ -1,0 +1,40 @@
+/* 
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: MIT-0
+*/
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.field__label {
+  font-size: 1rem;
+  color: #304050;
+}
+
+.field__coordinates {
+  margin: 0.5rem 0 0.15rem 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.field__input {
+  margin: 0.5rem 0 0.15rem 0;
+  max-width: 10rem;
+  border-style: solid;
+  border-color: #858585;
+  padding: 0.25rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.field__input:disabled {
+  border-color: #d1d1d1;
+  background: #d1d1d1;
+}
+
+.error {
+  color: red;
+}
