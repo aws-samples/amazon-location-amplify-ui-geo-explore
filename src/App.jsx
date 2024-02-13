@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MIT-0
 
 import React, { useState, useEffect } from "react";
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { LocationClient } from "@aws-sdk/client-location";
 import { IDENTITY_POOL_ID, REGION, MAP, PLACE } from "./configuration";
 import {
@@ -17,7 +18,7 @@ import PlacesLayer from "./components/places/PlacesLayer";
 import RoutesLayer from "./components/routes/RoutesLayer";
 import GeofencesLayer from "./components/geofences/GeofencesLayer";
 import TrackersLayer from "./components/trackers/TrackersLayer";
-import { AmplifyProvider } from "@aws-amplify/ui-react";
+import { ThemeProvider } from "@aws-amplify/ui-react";
 import { MapView } from "@aws-amplify/ui-react-geo";
 import { NavigationControl } from "react-map-gl";
 import { theme } from "./theme";
@@ -29,11 +30,13 @@ import "./index.css";
 // Fill values in configuration.js
 Amplify.configure({
   Auth: {
-    identityPoolId: IDENTITY_POOL_ID, // REQUIRED - Amazon Cognito Identity Pool ID
-    region: REGION, // REQUIRED - Amazon Cognito Region
+    Cognito: {
+      identityPoolId: IDENTITY_POOL_ID, // REQUIRED - Amazon Cognito Identity Pool ID
+      allowGuestAccess: true,
+    },
   },
-  geo: {
-    amazon_location_service: {
+  Geo: {
+    LocationService: {
       maps: {
         items: {
           [MAP.NAME]: {
@@ -42,6 +45,11 @@ Amplify.configure({
           },
         },
         default: MAP.NAME, // REQUIRED - Amazon Location Service Map resource name to set as default
+      },
+      // Amplify.configure requires searchIndices, while LocationSearch requires search_indices
+      searchIndices: {
+        items: [PLACE], // REQUIRED - Amazon Location Service Place Index name
+        default: PLACE, // REQUIRED - Amazon Location Service Place Index name to set as default
       },
       search_indices: {
         items: [PLACE], // REQUIRED - Amazon Location Service Place Index name
@@ -63,7 +71,8 @@ const App = () => {
   useEffect(() => {
     const fetchCredentials = async () => {
       // Fetch AWS credentials from Amazon Cognito using Amplify Auth and storing it in state
-      setCredentials(await Auth.currentUserCredentials());
+      const authSession = await fetchAuthSession();
+      setCredentials(authSession.credentials);
     };
     fetchCredentials();
   }, []);
@@ -94,7 +103,7 @@ const App = () => {
   };
 
   return (
-    <AmplifyProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       {client ? (
         <MapView
           id={MAP_CONTAINER}
@@ -123,9 +132,7 @@ const App = () => {
             onPanelChange={handlePanelChange}
             isDrawing={openedInfoBox === GEOFENCE_DRAWING_MODE ? true : false}
             onDrawingChange={(status) =>
-              status
-                ? setOpenedInfoBox(GEOFENCE_DRAWING_MODE)
-                : setOpenedInfoBox()
+              status ? setOpenedInfoBox(GEOFENCE_DRAWING_MODE) : setOpenedInfoBox()
             }
           />
           <TrackersLayer
@@ -133,20 +140,16 @@ const App = () => {
             clickedLngLat={clickedLngLat}
             isOpenedPanel={openedPanel === TRACKERS_PANEL ? true : false}
             onPanelChange={handlePanelChange}
-            isViewingDeviceHistory={
-              openedInfoBox === DEVICE_POSITION_HISTORY_VIEWER ? true : false
-            }
+            isViewingDeviceHistory={openedInfoBox === DEVICE_POSITION_HISTORY_VIEWER ? true : false}
             onViewingDeviceHistoryChange={(status) =>
-              status
-                ? setOpenedInfoBox(DEVICE_POSITION_HISTORY_VIEWER)
-                : setOpenedInfoBox()
+              status ? setOpenedInfoBox(DEVICE_POSITION_HISTORY_VIEWER) : setOpenedInfoBox()
             }
           />
         </MapView>
       ) : (
         <h1>Loading...</h1>
       )}
-    </AmplifyProvider>
+    </ThemeProvider>
   );
 };
 
