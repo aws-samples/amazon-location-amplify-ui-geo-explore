@@ -18,10 +18,8 @@ import PlacesLayer from "./components/places/PlacesLayer";
 import RoutesLayer from "./components/routes/RoutesLayer";
 import GeofencesLayer from "./components/geofences/GeofencesLayer";
 import TrackersLayer from "./components/trackers/TrackersLayer";
-import { ThemeProvider } from "@aws-amplify/ui-react";
 import { MapView } from "@aws-amplify/ui-react-geo";
 import { NavigationControl } from "react-map-gl";
-import { theme } from "./theme";
 import "@aws-amplify/ui-react/styles.css";
 import "@aws-amplify/ui-react-geo/styles.css";
 import "./index.css";
@@ -103,7 +101,7 @@ const App = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       {client ? (
         <MapView
           id={MAP_CONTAINER}
@@ -149,7 +147,7 @@ const App = () => {
       ) : (
         <h1>Loading...</h1>
       )}
-    </ThemeProvider>
+    </>
   );
 };
 
