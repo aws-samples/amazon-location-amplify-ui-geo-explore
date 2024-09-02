@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@aws-amplify/geo": "^3.0.16",
-    "@aws-amplify/ui-react": "^6.1.14",
+    "@aws-amplify/ui-react": "^6.2.0",
     "@aws-amplify/ui-react-geo": "^2.0.19",
     "aws-amplify": "^6.5.3",
     "events": "^3.3.0",
