@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aws-amplify/geo": "^3.0.64",
+    "@aws-amplify/geo": "^3.0.81",
     "@aws-amplify/ui-react": "^6.9.5",
     "@aws-amplify/ui-react-geo": "^2.2.8",
     "aws-amplify": "^6.13.2",
